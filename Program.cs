@@ -90,7 +90,7 @@ namespace BaseClasses
 
         public IEnumerable<Good> Filter<T>()
         {
-            bool Compare(object obj)
+            static bool Compare(object obj)
             {
                 if (typeof(T) == obj.GetType()) return true;
                 else return false;
@@ -104,10 +104,6 @@ namespace BaseClasses
     /// </summary>
     public class ObjectComparable
     {
-        /// <summary>
-        /// So sánh hai đối tượng.
-        /// </summary>
-        /// <param name="ignore">Các thuộc tính, trường dữ liệu muốn bỏ qua việc so sánh.</param>
         public static bool Compare(object obj1, object obj2, params string[] ignore)
         {
             if (obj1.GetType().Name != obj2.GetType().Name) return false;
@@ -125,11 +121,11 @@ namespace BaseClasses
             {
                 if (ignore.FirstOrDefault(p => p == property1.Name) != null) continue;
 
-                PropertyInfo? property2 = properties2.FirstOrDefault(p => p.Name == property1.Name);
+                PropertyInfo property2 = properties2.FirstOrDefault(p => p.Name == property1.Name);
                 if (property2 == null || property1.PropertyType != property2.PropertyType)
                     return false;
 
-                if (!property1.GetValue(obj1).Equals(property2.GetValue(obj2))) return false;
+                if (property1.GetValue(obj1) == property2.GetValue(obj2)) return false;
             }
             return true;
         }
@@ -143,11 +139,11 @@ namespace BaseClasses
             {
                 if (ignore.FirstOrDefault(f => f == field1.Name) != null) continue;
 
-                FieldInfo? field2 = fields2.FirstOrDefault(f => f.Name == field1.Name);
+                FieldInfo field2 = fields2.FirstOrDefault(f => f.Name == field1.Name);
                 if (field2 == null || field1.FieldType != field2.FieldType)
                     return false;
 
-                if (!field1.GetValue(obj1).Equals(field2.GetValue(obj2))) return false;
+                if (field1.GetValue(obj1) == field2.GetValue(obj2)) return false;
             }
             return true;
         }
